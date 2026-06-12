@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ui } from '../../i18n/ui';
+import { getCollection } from 'astro:content';
+
+const t = ui.zh;
+const te = ui.en;
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+---
+
+<BaseLayout activeNav="blog" title="YANN — Dispatch">
+  <header class="page-header">
+    <h1 data-zh={t.blog.title} data-en={te.blog.title}>{t.blog.title}</h1>
+    <p data-zh={t.blog.subtitle} data-en={te.blog.subtitle}>{t.blog.subtitle}</p>
+  </header>
+
+  {posts.length === 0 ? (
+    <p style="color: var(--text-muted); font-family: var(--font-mono); font-size: 0.85rem;">
+      <span data-zh={t.blog.empty} data-en={te.blog.empty}>{t.blog.empty}</span>
+    </p>
+  ) : (
+    <div class="card-grid">
+      {posts.map((post) => (
+        <article class="card">
+          <p class="card-meta">
+            {post.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
+          </p>
+          <h3>
+            <a href={`/blog/${post.id}`}>
+              <span data-zh={post.data.title.zh} data-en={post.data.title.en}>{post.data.title.zh}</span>
+            </a>
+          </h3>
+          <p class="card-desc">
+            <span data-zh={post.data.description.zh} data-en={post.data.description.en}>{post.data.description.zh}</span>
+          </p>
+          {post.data.tags.length > 0 && (
+            <div class="card-tags">
+              {post.data.tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  )}
+</BaseLayout>

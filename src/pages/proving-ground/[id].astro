@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ui } from '../../i18n/ui';
+import { projects, getProject } from '../../data/projects';
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { id: p.id } }));
+}
+
+const { id } = Astro.params;
+const project = getProject(id!);
+
+if (!project) {
+  return Astro.redirect('/proving-ground');
+}
+
+const t = ui.zh;
+const te = ui.en;
+---
+
+<BaseLayout activeNav="proving" title={`YANN — ${project.codename}`}>
+  <a href="/proving-ground" style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); display: inline-block; margin-bottom: 2rem;">
+    ← <span data-zh={t.proving.back} data-en={te.proving.back}>{t.proving.back}</span>
+  </a>
+
+  <header class="project-hero">
+    <p class="project-codename">{project.codename}</p>
+    <h1>
+      <span data-zh={project.title.zh} data-en={project.title.en}>{project.title.zh}</span>
+    </h1>
+    <p class="hero-line">
+      <span data-zh={project.hero} data-en={project.hero}>{project.hero}</span>
+    </p>
+    <div class="project-meta-bar">
+      <span>{project.period}</span>
+      <span>
+        <span data-zh={t.proving.status} data-en={te.proving.status}>{t.proving.status}</span>:
+        <span data-zh={project.status.zh} data-en={project.status.en}>{project.status.zh}</span>
+      </span>
+      {project.github && (
+        <a href={project.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      )}
+    </div>
+    <div class="tech-bar">
+      {project.tech.map((tech) => (
+        <span class="tag">{tech}</span>
+      ))}
+    </div>
+  </header>
+
+  <section class="project-section">
+    <p>
+      <span data-zh={project.summary.zh} data-en={project.summary.en}>{project.summary.zh}</span>
+    </p>
+  </section>
+
+  <section class="project-section">
+    <h2>Challenge</h2>
+    <p>
+      <span data-zh={project.challenge.zh} data-en={project.challenge.en}>{project.challenge.zh}</span>
+    </p>
+  </section>
+
+  <section class="project-section">
+    <h2>Approach</h2>
+    <ul>
+      {project.approach.zh.map((_, i) => (
+        <li>
+          <span data-zh={project.approach.zh[i]} data-en={project.approach.en[i]}>{project.approach.zh[i]}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="project-section">
+    <h2>Outcome</h2>
+    <ul>
+      {project.outcome.zh.map((_, i) => (
+        <li>
+          <span data-zh={project.outcome.zh[i]} data-en={project.outcome.en[i]}>{project.outcome.zh[i]}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

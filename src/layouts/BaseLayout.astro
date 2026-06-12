@@ -1,0 +1,83 @@
+---
+import '../styles/global.css';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  title?: string;
+  description?: string;
+  activeNav?: 'home' | 'resume' | 'blog' | 'proving';
+}
+
+const { title = 'YANN', description = 'Embedded systems · Avionics · Industrial AI', activeNav } = Astro.props;
+const t = ui.zh;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="author" content="Yann Yan" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={Astro.url.href} />
+    <title>{title}</title>
+  </head>
+  <body class="scanlines">
+    <div class="site-wrapper">
+      <header class="site-header">
+        <div class="header-inner">
+          <a href="/" class="logo">
+            <span class="logo-mark"></span>
+            YANN
+          </a>
+          <nav>
+            <ul class="nav-links">
+              <li>
+                <a href="/resume" class:list={{ active: activeNav === 'resume' }}>
+                  <span data-zh={t.nav.resume} data-en={ui.en.nav.resume}>{t.nav.resume}</span>
+                </a>
+              </li>
+              <li>
+                <a href="/blog" class:list={{ active: activeNav === 'blog' }}>
+                  <span data-zh={t.nav.blog} data-en={ui.en.nav.blog}>{t.nav.blog}</span>
+                </a>
+              </li>
+              <li>
+                <a href="/proving-ground" class:list={{ active: activeNav === 'proving' }}>
+                  <span data-zh={t.nav.proving} data-en={ui.en.nav.proving}>{t.nav.proving}</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <div class="header-actions">
+            <button type="button" class="lang-btn" data-lang-toggle>EN</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <slot />
+      </main>
+
+      <footer class="site-footer">
+        <div class="footer-inner">
+          <span>
+            © {new Date().getFullYear()} YANN ·
+            <span data-zh={t.footer.rights} data-en={ui.en.footer.rights}>{t.footer.rights}</span>
+          </span>
+          <div class="social-links">
+            <a href="https://github.com/c0d9nqa3" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="mailto:Wj.yann@outlook.com">Email</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <script>
+      import { initI18n } from '../scripts/i18n';
+      initI18n();
+    </script>
+  </body>
+</html>

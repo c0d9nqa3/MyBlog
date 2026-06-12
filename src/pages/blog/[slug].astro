@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ui } from '../../i18n/ui';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return Promise.all(
+    posts.map(async (post) => {
+      const { Content } = await render(post);
+      return {
+        params: { slug: post.id },
+        props: { post, Content },
+      };
+    })
+  );
+}
+
+const { post, Content } = Astro.props;
+
+const t = ui.zh;
+const te = ui.en;
+---
+
+<BaseLayout activeNav="blog" title={`YANN — ${post.data.title.zh}`}>
+  <a href="/blog" style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); display: inline-block; margin-bottom: 2rem;">
+    ← <span data-zh={t.blog.back} data-en={te.blog.back}>{t.blog.back}</span>
+  </a>
+
+  <header class="post-header">
+    <h1>
+      <span data-zh={post.data.title.zh} data-en={post.data.title.en}>{post.data.title.zh}</span>
+    </h1>
+    <div class="post-meta">
+      <time datetime={post.data.date.toISOString()}>
+        {post.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
+      </time>
+      {post.data.tags.length > 0 && (
+        <span>
+          {post.data.tags.map((tag: string) => `#${tag}`).join(' ')}
+        </span>
+      )}
+    </div>
+    <p style="color: var(--text-secondary); margin-top: 1rem; font-size: 0.95rem;">
+      <span data-zh={post.data.description.zh} data-en={post.data.description.en}>{post.data.description.zh}</span>
+    </p>
+  </header>
+
+  <article class="prose">
+    <Content />
+  </article>
+</BaseLayout>

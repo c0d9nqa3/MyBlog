@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { ui } from '../i18n/ui';
+import { profile, work, education, skills, resumeProjects } from '../data/resume';
+
+const t = ui.zh;
+const te = ui.en;
+---
+
+<BaseLayout activeNav="resume" title="YANN — Dossier">
+  <header class="page-header">
+    <h1 data-zh={t.resume.title} data-en={te.resume.title}>{t.resume.title}</h1>
+    <p data-zh={t.resume.subtitle} data-en={te.resume.subtitle}>{t.resume.subtitle}</p>
+  </header>
+
+  <section class="resume-block">
+    <h2>{profile.name} / {profile.nameZh}</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+      <span data-zh={profile.title.zh} data-en={profile.title.en}>{profile.title.zh}</span>
+      · {profile.email} · {profile.location.zh}
+    </p>
+    <ul style="list-style: none;">
+      {profile.summary.zh.map((_, i) => (
+        <li style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem; padding-left: 1rem; position: relative;">
+          <span style="position: absolute; left: 0; color: var(--accent-teal);">▸</span>
+          <span data-zh={profile.summary.zh[i]} data-en={profile.summary.en[i]}>{profile.summary.zh[i]}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="resume-block">
+    <h2 data-zh={t.resume.experience} data-en={te.resume.experience}>{t.resume.experience}</h2>
+    {work.map((w) => (
+      <div class="timeline-item">
+        <div class="timeline-period">{w.period}</div>
+        <div class="timeline-body">
+          <h3>
+            <span data-zh={w.company.zh} data-en={w.company.en}>{w.company.zh}</span>
+          </h3>
+          <p class="timeline-role">
+            <span data-zh={w.role.zh} data-en={w.role.en}>{w.role.zh}</span>
+          </p>
+          <ul>
+            {w.highlights.zh.map((_, i) => (
+              <li>
+                <span data-zh={w.highlights.zh[i]} data-en={w.highlights.en[i]}>{w.highlights.zh[i]}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    ))}
+  </section>
+
+  <section class="resume-block">
+    <h2 data-zh={t.resume.education} data-en={te.resume.education}>{t.resume.education}</h2>
+    {education.map((e) => (
+      <div class="timeline-item">
+        <div class="timeline-period">{e.period}</div>
+        <div class="timeline-body">
+          <h3>
+            <span data-zh={e.school.zh} data-en={e.school.en}>{e.school.zh}</span>
+          </h3>
+          <p class="timeline-role">
+            <span data-zh={e.degree.zh} data-en={e.degree.en}>{e.degree.zh}</span>
+            {e.gpa && <> · {t.resume.gpa} {e.gpa}</>}
+            {e.rank && (
+              <> · <span data-zh={e.rank.zh} data-en={e.rank.en}>{e.rank.zh}</span></>
+            )}
+          </p>
+          {e.honors && (
+            <ul>
+              {e.honors.zh.map((_, i) => (
+                <li>
+                  <span data-zh={e.honors!.zh[i]} data-en={e.honors!.en[i]}>{e.honors!.zh[i]}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    ))}
+  </section>
+
+  <section class="resume-block">
+    <h2 data-zh={t.resume.projects} data-en={te.resume.projects}>{t.resume.projects}</h2>
+    <div class="card-grid">
+      {resumeProjects.map((p) => (
+        <article class="card">
+          <p class="card-meta">{p.period}</p>
+          <h3>
+            {p.provingGroundId ? (
+              <a href={`/proving-ground/${p.provingGroundId}`}>
+                <span data-zh={p.title.zh} data-en={p.title.en}>{p.title.zh}</span>
+              </a>
+            ) : (
+              <span data-zh={p.title.zh} data-en={p.title.en}>{p.title.zh}</span>
+            )}
+          </h3>
+          <p class="card-desc">
+            <span data-zh={p.summary.zh} data-en={p.summary.en}>{p.summary.zh}</span>
+          </p>
+          <div class="card-tags">
+            {p.tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+          {p.provingGroundId && (
+            <p style="margin-top: 0.75rem;">
+              <a href={`/proving-ground/${p.provingGroundId}`} style="font-family: var(--font-mono); font-size: 0.7rem;">
+                <span data-zh={t.resume.viewDetail} data-en={te.resume.viewDetail}>→ {t.resume.viewDetail}</span>
+              </a>
+            </p>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="resume-block">
+    <h2 data-zh={t.resume.skills} data-en={te.resume.skills}>{t.resume.skills}</h2>
+    <ul class="skills-list">
+      {skills.zh.map((_, i) => (
+        <li>
+          <span data-zh={skills.zh[i]} data-en={skills.en[i]}>{skills.zh[i]}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

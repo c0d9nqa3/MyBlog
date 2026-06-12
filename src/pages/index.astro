@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroCanvas from '../components/HeroCanvas';
+import ViewCounter from '../components/ViewCounter';
+import { ui } from '../i18n/ui';
+import { getFeaturedProjects } from '../data/projects';
+import { getCollection } from 'astro:content';
+
+const featured = getFeaturedProjects();
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 4);
+
+const t = ui.zh;
+const te = ui.en;
+---
+
+<BaseLayout activeNav="home" title="YANN — Embedded & Intelligent Systems">
+  <section class="hero">
+    <div class="hero-canvas-wrap">
+      <HeroCanvas client:load />
+    </div>
+    <div class="hero-content">
+      <p class="hero-eyebrow" data-zh={t.siteTagline} data-en={te.siteTagline}>{t.siteTagline}</p>
+      <h1 data-zh={t.home.greeting} data-en={te.home.greeting}>{t.home.greeting}</h1>
+      <p class="hero-intro" data-zh={t.home.intro} data-en={te.home.intro}>{t.home.intro}</p>
+      <div class="hero-actions">
+        <a href="/proving-ground" class="btn btn-primary" data-zh={t.home.explore} data-en={te.home.explore}>{t.home.explore}</a>
+        <a href="/blog" class="btn" data-zh={t.home.readBlog} data-en={te.home.readBlog}>{t.home.readBlog}</a>
+        <a href="/resume" class="btn" data-zh={t.home.viewResume} data-en={te.home.viewResume}>{t.home.viewResume}</a>
+      </div>
+      <ViewCounter
+        client:load
+        labelTitle={t.home.viewCount}
+        labelSite={t.home.viewCountSite}
+        labelPage={t.home.viewCountPage}
+      />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <h2 data-zh={t.home.featured} data-en={te.home.featured}>{t.home.featured}</h2>
+      <a href="/proving-ground">→</a>
+    </div>
+    <div class="card-grid">
+      {featured.slice(0, 2).map((p) => (
+        <article class="card">
+          <p class="card-codename">{p.codename}</p>
+          <h3>
+            <a href={`/proving-ground/${p.id}`}>
+              <span data-zh={p.title.zh} data-en={p.title.en}>{p.title.zh}</span>
+            </a>
+          </h3>
+          <p class="card-meta">{p.period}</p>
+          <p class="card-desc">
+            <span data-zh={p.summary.zh} data-en={p.summary.en}>{p.summary.zh}</span>
+          </p>
+          <div class="card-tags">
+            {p.tech.slice(0, 4).map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <h2 data-zh={t.home.recent} data-en={te.home.recent}>{t.home.recent}</h2>
+      <a href="/blog">→</a>
+    </div>
+    <div class="card-grid">
+      {posts.map((post) => (
+        <article class="card">
+          <p class="card-meta">
+            {post.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
+          </p>
+          <h3>
+            <a href={`/blog/${post.id}`}>
+              <span data-zh={post.data.title.zh} data-en={post.data.title.en}>{post.data.title.zh}</span>
+            </a>
+          </h3>
+          <p class="card-desc">
+            <span data-zh={post.data.description.zh} data-en={post.data.description.en}>{post.data.description.zh}</span>
+          </p>
+          {post.data.tags.length > 0 && (
+            <div class="card-tags">
+              {post.data.tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

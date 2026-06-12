@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ui } from '../../i18n/ui';
+import { projects } from '../../data/projects';
+
+const t = ui.zh;
+const te = ui.en;
+const sorted = [...projects].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+---
+
+<BaseLayout activeNav="proving" title="YANN — Proving Ground">
+  <header class="page-header">
+    <h1 data-zh={t.proving.title} data-en={te.proving.title}>{t.proving.title}</h1>
+    <p data-zh={t.proving.subtitle} data-en={te.proving.subtitle}>{t.proving.subtitle}</p>
+  </header>
+
+  <div class="card-grid">
+    {sorted.map((p) => (
+      <article class="card">
+        <p class="card-codename">{p.codename}</p>
+        <h3>
+          <a href={`/proving-ground/${p.id}`}>
+            <span data-zh={p.title.zh} data-en={p.title.en}>{p.title.zh}</span>
+          </a>
+        </h3>
+        <p class="card-meta">
+          {p.period} · <span data-zh={p.status.zh} data-en={p.status.en}>{p.status.zh}</span>
+        </p>
+        <p class="card-desc" style="color: var(--accent-amber); font-size: 0.85rem;">
+          <span data-zh={p.hero} data-en={p.hero}>{p.hero}</span>
+        </p>
+        <p class="card-desc">
+          <span data-zh={p.summary.zh} data-en={p.summary.en}>{p.summary.zh}</span>
+        </p>
+        <div class="card-tags">
+          {p.tech.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      </article>
+    ))}
+  </div>
+</BaseLayout>
