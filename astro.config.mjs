@@ -8,8 +8,4 @@ export default defineConfig({
   integrations: [react(), mdx()],
   site: process.env.SITE_URL || 'https://yann-blog.pages.dev',
   base: process.env.BASE_PATH || '/',
-  i18n: {
-    defaultLocale: 'zh',
-    locales: ['zh', 'en'],
-  },
 });
